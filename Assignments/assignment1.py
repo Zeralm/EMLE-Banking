@@ -1,4 +1,4 @@
-__version__ = "3.6.5"
+__version__ = "3.6.10"
 
 import pandas as pd 
 import sklearn as sk
@@ -30,6 +30,7 @@ print(f"{round(cost_year,2)}€ saved a year")
 
 #QUESTION 2 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 print("2 ------------------------------------")
+#Splits dataset into: predictor Train, predictor Test, label Train, label Test
 x,X,y,Y = train_test_split(data[["ID","dept_code","issue_date"]],data[["ID","issuer_eng"]],test_size=0.3)
 
 print(f" size Train set = {len(x)}", f" size Test set = {len(X)}")
@@ -37,35 +38,44 @@ print(f" size Train set = {len(x)}", f" size Test set = {len(X)}")
 
 
 def crappy_predict(x,X,y,Y):
-    #Get a code X, checks its dates. Finds the observation closest date in x for the same code. Gets the issuer_eng of said observation.
 
-    #Gets all observations corresponding to every code of test set
+    #Gets all codes of both sets
     codesX = X["dept_code"].unique()
-    codesx = x["dept_code"].unique()    #Gets all codes
+    codesx = x["dept_code"].unique()    
 
-    exceptions = [l for l in codesX if l not in codesx] #Stores the X codes that aren't present in x
+    #Stores the X codes that aren't present in x, not really relevant
+    exceptions = [l for l in codesX if l not in codesx] 
     if len(exceptions) == 0: print("Every code present in Test set is present in Train set as well")
     else: print(f"There are {len(exceptions)} codes present in Test set that are not present in Test set")
-    #Code: 20003
+    
+    
+    #Code we will use: 20003
 
-    #Gets all observations in x and X with that code. 
+    #Gets all observations in x with that code. 
     utsang = x.loc[[akak == 20003 for akak in x.loc[:,"dept_code"]],:]
+    #Appends the test labels in utsang because it's practical
     a = pd.DataFrame({"issuer_eng":y.loc[[akak == 20003 for akak in x.loc[:,"dept_code"]],"issuer_eng"]})
     utsang = utsang.join(a["issuer_eng"])
-    
+    #Gets all observations in X awith that code.
     karadel = X.loc[[akak == 20003 for akak in X.loc[:,"dept_code"]],:]
 
+    #Converts the string dates in utsang and karadel into DATETIME objects
     Xdates = [datetime.datetime.strptime(h, '%Y-%m-%d') for h in karadel.loc[:,"issue_date"]]
     xdates = [datetime.datetime.strptime(g, '%Y-%m-%d') for g in utsang.loc[:,"issue_date"]]
 
+    #To get the closest Train date to every Test date, w substract each Train date separately to
+    # each Test date. X-x = dif. The substraction result closest to 0 is kept. Then, the original
+    # is reconstructed using X-dif = x
     rightx = pd.Series([datetime.date.isoformat(hue - min([hue-yay for yay in xdates],key=abs)) for hue in Xdates])
 
+    #We get the labels corresponding to the dates we selected from x. 
     predictions =[]
-    for i in range(len(rightx)): predictions.append(list(utsang.loc[[rightx[i] == u for u in utsang["issue_date"]],"issuer_eng"])[0])
+    for i in range(len(rightx)): predictions.append(utsang.loc[[rightx[i] == u for u in utsang["issue_date"]],"issuer_eng"])
     predictions = pd.Series(predictions)
     
+    #Levenstein distance between real and predicted
     levenstein = [nltk.edit_distance(Y.loc[Y["ID"].isin(karadel["ID"]),"issuer_eng"].iloc[j],predictions.iloc[j]) for j in range(len(predictions))]
-    
+    #Gets the percentage of predictions below several levenstein distance thresholds 
     performance = [[u<=o for u in levenstein].count(True)/len(levenstein) for o in range(50)]
     
     plt.plot(range(50),performance)
