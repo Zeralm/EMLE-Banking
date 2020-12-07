@@ -68,14 +68,14 @@ def crappy_predict(x,X,y,Y):
     # is reconstructed using X-dif = x
     rightx = pd.Series([datetime.date.isoformat(hue - min([hue-yay for yay in xdates],key=abs)) for hue in Xdates])
 
-    #We get the labels corresponding to the dates we selected from x. 
+    #We take the 
     predictions =[]
-    for i in range(len(rightx)): predictions.append(utsang.loc[[rightx[i] == u for u in utsang["issue_date"]],"issuer_eng"])
+    for i in range(len(rightx)): predictions.append(list(utsang.loc[[rightx[i] == u for u in utsang["issue_date"]],"issuer_eng"])[0])
     predictions = pd.Series(predictions)
     
     #Levenstein distance between real and predicted
     levenstein = [nltk.edit_distance(Y.loc[Y["ID"].isin(karadel["ID"]),"issuer_eng"].iloc[j],predictions.iloc[j]) for j in range(len(predictions))]
-    #Gets the percentage of predictions below several levenstein distance thresholds 
+    #Gets the percentage of predictions below several levenstein distance thresholds
     performance = [[u<=o for u in levenstein].count(True)/len(levenstein) for o in range(50)]
     
     plt.plot(range(50),performance)
