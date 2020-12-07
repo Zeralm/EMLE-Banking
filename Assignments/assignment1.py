@@ -1,3 +1,5 @@
+__version__ = "3.6.5"
+
 import pandas as pd 
 import sklearn as sk
 import matplotlib.pyplot as plt
@@ -5,34 +7,32 @@ from sklearn.model_selection import train_test_split
 import datetime
 
 
-data = pd.read_csv("C:/Users/David/Desktop/Machine/CodesForCourse.csv")
+data = pd.read_csv("Assignments/CodesForCourse.csv")
 
-
+print("DATA OVERVIEW:")
 
 data["ID"] = range(len(data))
 print(data)
 
-print(len(data[["issuer_eng","issue_date"]]))
-
-print(len(data["issuer_eng"].unique()))
+print(f"There are {len(data['issuer_eng'].unique())} distinct entries for issuer names")
 
 
 #QUESTION 1 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+--+-+--+-+-+-+-+-+-+
 
 #Average length issuer field
+print("1 ------------------------------------")
 avg = pd.Series([len(k) for k in data.loc[:,"issuer_eng"]]).mean()
 #Average typing speed per minute: 40 for an average person
-print(avg)
-minutes_year = (avg/80)*100000
-cost_year = minutes_year * 0.05
-print(f"{cost_year}€ a year")
+minutes_saved_year = (avg/80)*100000
+cost_year = minutes_saved_year * 0.05
+print(f"{round(cost_year,2)}€ saved a year")
 
 
 #QUESTION 2 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-
+print("2 ------------------------------------")
 x,X,y,Y = train_test_split(data[["ID","dept_code","issue_date"]],data[["ID","issuer_eng"]],test_size=0.3)
 
-print((f" length x = {len(x)}", f" length X = {len(X)}"))
+print(f" size Train set = {len(x)}", f" size Test set = {len(X)}")
 
 
 
@@ -44,7 +44,8 @@ def crappy_predict(x,X,y,Y):
     codesx = x["dept_code"].unique()    #Gets all codes
 
     exceptions = [l for l in codesX if l not in codesx] #Stores the X codes that aren't present in x
-
+    if len(exceptions) == 0: print("Every code present in Test set is present in Train set as well")
+    else: print(f"There are {len(exceptions)} codes present in Test set that are not present in Test set")
     #Code: 20003
 
     #Gets all observations in x and X with that code. 
@@ -64,11 +65,10 @@ def crappy_predict(x,X,y,Y):
     predictions = pd.Series(predictions)
     
     accuracy = [Y.loc[Y["ID"].isin(karadel["ID"]),"issuer_eng"].iloc[j] == predictions.iloc[j] for j in range(len(predictions))].count(True)/len(predictions)
-    print(f"{accuracy} accuracy")
-    #Gets the issue_eng of the observations with the minimum difference between the dates of the dates corresponding to those observations and the corresponding dates in X
-    #Assigns to Y each issue_eng found for the corresponding X
-                
+    print(f"Our crappy method gets {round(accuracy*100,2)}% accuracy!")
+    #Ou shit realized they want leveinstein distance
+    print("Ou shit realized they want leveinstein distance")
 
-    #Gets all observations corresponding to every code of train set
+
     
 crappy_predict(x,X,y,Y)
