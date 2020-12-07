@@ -5,8 +5,8 @@ import sklearn as sk
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 import datetime
-
-
+import nltk
+import matplotlib.pyplot as plt
 data = pd.read_csv("Assignments/CodesForCourse.csv")
 
 print("DATA OVERVIEW:")
@@ -64,11 +64,12 @@ def crappy_predict(x,X,y,Y):
     for i in range(len(rightx)): predictions.append(list(utsang.loc[[rightx[i] == u for u in utsang["issue_date"]],"issuer_eng"])[0])
     predictions = pd.Series(predictions)
     
-    accuracy = [Y.loc[Y["ID"].isin(karadel["ID"]),"issuer_eng"].iloc[j] == predictions.iloc[j] for j in range(len(predictions))].count(True)/len(predictions)
-    print(f"Our crappy method gets {round(accuracy*100,2)}% accuracy!")
-    #Ou shit realized they want leveinstein distance
-    print("Ou shit realized they want leveinstein distance")
-
-
+    levenstein = [nltk.edit_distance(Y.loc[Y["ID"].isin(karadel["ID"]),"issuer_eng"].iloc[j],predictions.iloc[j]) for j in range(len(predictions))]
+    
+    performance = [[u<=o for u in levenstein].count(True)/len(levenstein) for o in range(50)]
+    
+    plt.plot(range(50),performance)
+    plt.show()  
+    
     
 crappy_predict(x,X,y,Y)
