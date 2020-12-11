@@ -24,8 +24,9 @@ print(f"There are {len(data['issuer_eng'].unique())} distinct entries for issuer
 
 # QUESTION 1 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+--+-+--+-+-+-+-+-+-+
 
-# Average length issuer field
+
 print("1 ------------------------------------")
+# Average length issuer field
 avg = pd.Series([len(k) for k in data.loc[:,"issuer_eng"]]).mean()
 # Average typing speed per minute: 40 for an average person
 minutes_saved_year = (avg/80)*100000
@@ -74,7 +75,7 @@ def crappy_predict(x,X,y,Y):
     # is reconstructed using X-dif = x
     rightx = pd.Series([datetime.date.isoformat(hue - min([hue-yay for yay in xdates],key=abs)) for hue in Xdates])
 
-    # We take the 
+    # We take the name description in x corresponding to the dates we just selected. Those are the predictions
     predictions =[]
     for i in range(len(rightx)): predictions.append(list(utsang.loc[[rightx[i] == u for u in utsang["issue_date"]],"issuer_eng"])[0])
     predictions = pd.Series(predictions)
@@ -93,7 +94,7 @@ crappy_predict(x,X,y,Y)
 
 # QUESTION 3 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-#CODE: 20003
+# CODE: 20003
 print("3 -----------------------------------")
 # Gets all unique descriptions issue_eng
 all_issuers = data.loc[[20003 == u for u in data.loc[:,"dept_code"]],"issuer_eng"]
@@ -118,7 +119,7 @@ affprop = sklearn.cluster.AffinityPropagation(affinity = "precomputed", damping 
 # Just fit :D
 results = affprop.fit(levensto)
 
-#Just for visualization, we organize in a dataset each label and its asignet cluster
+#Just for visualization, we organize in a dataset each label and its asigned cluster
 classification = pd.DataFrame(list(zip(issuers,results.labels_)))
 
 classification.columns = ["original","cluster"]
@@ -128,7 +129,7 @@ equivalence = dict(zip(classification["original"],[issuers[results.cluster_cente
 
 ole = pd.Series(["" for i in range(len(data))])
 
-# Assigns to each label of the dataset associated to code a new label, the one associated to the respective centroid.
+# Assigns to each label of the dataset associated to the selected code a new label, the one associated to the respective centroid.
 ole[[o == 20003 for o in data.loc[:,"dept_code"]]] = [equivalence[o] for o in data.loc[[t == 20003 for t in data.loc[:,"dept_code"]],"issuer_eng"]]
 
 data["exemplar"] = ole
