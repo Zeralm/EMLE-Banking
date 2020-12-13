@@ -102,7 +102,7 @@ issuers = all_issuers.unique()
 
 # Calculates the levenstein distance between them and puts them in an array
 uk = time.perf_counter()
-levensto = -1*np.array([[distance.levenshtein(i,u) for i in issuers] for u in issuers])
+levensto = -1*np.array([[nltk.edit_distance(i,u) for i in issuers] for u in issuers])
 ak = time.perf_counter()
 print(f"Calculating distance matrix takes {ak-uk} seconds")
 
