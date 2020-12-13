@@ -85,6 +85,9 @@ def crappy_predict(x,X,y,Y):
     performance = [[u<=o for u in levenstein].count(True)/len(levenstein) for o in range(50)]
     
     plt.plot(range(50),performance)
+    plt.xlabel("Levenshtein distance")
+    plt.ylabel("Error smaller than levenshtein")
+    plt.title(label="Proportion test data with prediction error smaller than levenshtein distance",fontsize=8,color="blue")
     plt.show()  
     
     
