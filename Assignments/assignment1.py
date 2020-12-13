@@ -52,7 +52,7 @@ def crappy_predict(x,X,y,Y):
     # Stores the X codes that aren't present in x, not really relevant
     exceptions = [l for l in codesX if l not in codesx] 
     if len(exceptions) == 0: print("Every code present in Test set is present in Train set as well")
-    else: print(f"There are {len(exceptions)} codes present in Test set that are not present in Test set")
+    else: print(f"There are {len(exceptions)} codes present in Test set that are not present in Train set")
     
     
     #Code we will use: 20003
