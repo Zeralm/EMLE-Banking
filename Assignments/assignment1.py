@@ -14,24 +14,24 @@ import numpy as np
 from matplotlib import cm as cm
 data = pd.read_csv("Assignments/CodesForCourse.csv")
 
-print("DATA OVERVIEW:")
 
 data["ID"] = range(len(data))
-print(data)
+
+data.head()
 
 print(f"There are {len(data['issuer_eng'].unique())} distinct entries for issuer names")
 
 
 # QUESTION 1 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+--+-+--+-+-+-+-+-+-+
 
-
 print("1 ------------------------------------")
 # Average length issuer field
 avg = pd.Series([len(k) for k in data.loc[:,"issuer_eng"]]).mean()
+print(f"The average length of the issuer field is {avg}")
 # Average typing speed per minute: 40 for an average person
-minutes_saved_year = (avg/80)*100000
+minutes_saved_year = ((avg/40)+0.5)*100000
 cost_year = minutes_saved_year * 0.05
-print(f"{round(cost_year,2)}€ saved a year")
+print(f"{round(cost_year,2)}€ could be saved a year")
 
 
 # QUESTION 2 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
