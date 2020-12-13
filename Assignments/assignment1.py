@@ -7,7 +7,6 @@ from sklearn.model_selection import train_test_split
 import datetime
 import nltk
 import matplotlib.pyplot as plt
-import distance
 import sklearn.cluster
 import time
 import numpy as np
